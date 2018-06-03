@@ -7,6 +7,8 @@
 <body>
     <textarea id="chat-log" cols="100" rows="20"></textarea><br/>
     <input id="chat-message-input" type="text" size="100"/><br/>
+    <input id="chat-name-input" type="text" size="100"/><br/>
+
     <input id="chat-message-submit" type="button" value="Send"/>
 </body>
 <script>
@@ -19,7 +21,8 @@
     chatSocket.onmessage = function(e) {
         var data = JSON.parse(e.data);
         var message = data['message'];
-        document.querySelector('#chat-log').value += (message + '\n');
+        var name = data['name']
+        document.querySelector('#chat-log').value += (name + ": " + message + '\n');
     };
 
     chatSocket.onclose = function(e) {
@@ -35,9 +38,12 @@
 
     document.querySelector('#chat-message-submit').onclick = function(e) {
         var messageInputDom = document.querySelector('#chat-message-input');
+        var nameIputDom = document.querySelector('#chat-name-input');
+        var name = nameIputDom.value;
         var message = messageInputDom.value;
         chatSocket.send(JSON.stringify({
-            'message': message
+            'message': message, 
+            'name':name
         }));
 
         messageInputDom.value = '';
